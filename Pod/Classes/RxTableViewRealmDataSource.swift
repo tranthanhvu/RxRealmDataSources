@@ -20,9 +20,11 @@ import RxRealm
     public typealias TableCellFactory<E: Object> = (RxTableViewRealmDataSource<E>, UITableView, IndexPath, E) -> UITableViewCell
     public typealias TableCellConfig<E: Object, CellType: UITableViewCell> = (CellType, IndexPath, E) -> Void
 
+    public typealias TableCellCanEditConfig<E: Object> = (RxTableViewRealmDataSource<E>, IndexPath) -> Bool
+    
     public class RxTableViewRealmDataSource<E: Object>: NSObject, UITableViewDataSource {
 
-        private var items: AnyRealmCollection<E>?
+        fileprivate var items: AnyRealmCollection<E>?
 
         // MARK: - Configuration
 
@@ -35,6 +37,7 @@ import RxRealm
 
         public var headerTitle: String?
         public var footerTitle: String?
+        public var canEditConfig: TableCellCanEditConfig<E> = { _ in return false}
 
         // MARK: - Init
         public let cellIdentifier: String
@@ -108,6 +111,13 @@ import RxRealm
             tableView.insertRows(at: changes.inserted.map(fromRow), with: rowAnimations.insert)
             tableView.reloadRows(at: changes.updated.map(fromRow), with: rowAnimations.update)
             tableView.endUpdates()
+        }
+    }
+    
+    extension RxTableViewRealmDataSource: SectionedViewDataSourceType {
+        
+        public func model(at indexPath: IndexPath) throws -> Any {
+            return self.items![indexPath.item]
         }
     }
 

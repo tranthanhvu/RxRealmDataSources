@@ -25,7 +25,10 @@ extension Reactive where Base: UITableView {
                 if ds.tableView == nil {
                     ds.tableView = self.base
                 }
-                ds.tableView?.dataSource = ds
+                
+                if ds.tableView?.dataSource == nil {
+                    ds.tableView?.dataSource = ds
+                }
                 ds.applyChanges(items: AnyRealmCollection<E>(results), changes: changes)
             }
     }
@@ -40,7 +43,10 @@ extension Reactive where Base: UICollectionView {
                 if ds.collectionView == nil {
                     ds.collectionView = self.base
                 }
-                ds.collectionView?.dataSource = ds
+                
+                if ds.collectionView?.dataSource == nil {
+                    ds.collectionView?.dataSource = ds
+                }
                 ds.applyChanges(items: AnyRealmCollection<E>(results), changes: changes)
             }
     }
